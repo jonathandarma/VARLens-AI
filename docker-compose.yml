@@ -1,0 +1,12 @@
+services:
+  api:
+    build: ./BackApp
+    env_file: .env
+    ports: ["8000:8000"]
+    volumes: ["./data:/app/data"]
+  web:
+    build: ./FrontApp
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
+    ports: ["3000:3000"]
+    depends_on: [api]
