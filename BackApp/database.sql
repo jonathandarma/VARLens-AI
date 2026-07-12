@@ -1,0 +1,9 @@
+create table public.matches (id bigint generated always as identity primary key, user_id uuid references auth.users(id), name text not null, status text not null default 'uploaded', video_path text not null, result jsonb, created_at timestamptz not null default now());
+create table public.videos (id bigint generated always as identity primary key, match_id bigint references public.matches(id) on delete cascade, storage_path text not null, metadata jsonb not null default '{}'::jsonb);
+create table public.detections (id bigint generated always as identity primary key, match_id bigint references public.matches(id) on delete cascade, frame integer not null, label text not null, confidence numeric not null, bbox jsonb not null);
+create table public.players (id bigint generated always as identity primary key, match_id bigint references public.matches(id) on delete cascade, track_id integer not null, team text, trajectory jsonb not null);
+create table public.events (id bigint generated always as identity primary key, match_id bigint references public.matches(id) on delete cascade, frame integer not null, type text not null, payload jsonb not null default '{}'::jsonb);
+create table public.predictions (id bigint generated always as identity primary key, match_id bigint references public.matches(id) on delete cascade, decision text not null, confidence numeric not null, factors jsonb not null);
+create table public.ai_explanations (id bigint generated always as identity primary key, prediction_id bigint references public.predictions(id) on delete cascade, audience text not null, content text not null);
+alter table public.matches enable row level security;
+create policy "Users view own matches" on public.matches for select using (auth.uid() = user_id);
