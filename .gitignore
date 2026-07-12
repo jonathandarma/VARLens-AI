@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+BackApp/.venv/
+BackApp/data/
+*.db
+
+# Node / Next.js
+node_modules/
+.next/
+FrontApp/node_modules/
+FrontApp/.next/
+
+# Env files
+.env
+*.env.local
